@@ -1,0 +1,86 @@
+Build a Next.js web app called "Recruitment Outreach Generator" for Advance Academy — a career coaching platform.
+
+OVERVIEW
+A two-feature tool helping job seekers identify target companies and generate high-converting outreach messages. Should feel premium, strategic, and personalised — like a career coach + recruiter in one.
+
+TECH STACK
+- Next.js (App Router)
+- TailwindCSS + Inter font
+- Lucide React icons
+- Anthropic API (claude-sonnet-4-5 model) via Next.js API routes
+- Supabase for data storage
+
+FEATURE 1: DREAM COMPANY FINDER
+User inputs:
+- Degree / Education
+- Work Experience (text area)
+- Skills (comma-separated or tags)
+- Interests
+- Desired Salary
+- Preferred Location
+
+AI outputs (via prompt chaining — run these as separate API calls in sequence):
+
+Chain 1 — Profile Analysis:
+Analyse the candidate profile. Output: market positioning level (Entry/Mid/Senior/Pivot), top 5 strengths, key gaps, honest market assessment.
+
+Chain 2 — Company Matrix:
+Generate 20 target companies grouped into:
+- Tier 1: Aspirational (top-name firms)
+- Tier 2: Realistic sweet spot (strong fit)
+- Tier 3: High-probability entry points
+For each: company name + one-sentence reason why it fits this candidate.
+
+Chain 3 — Target Roles:
+Generate 10 job titles. For each: title, level (Entry/Mid/Senior), one-line reason it fits.
+
+Chain 4 — Career Roadmap:
+Three phases: 0-6 months, 6-18 months, 2-5 years. Each phase: key actions, skills to develop, strategic moves. Make it specific and actionable.
+
+FEATURE 2: RECRUITMENT OUTREACH GENERATOR
+User inputs:
+- Target Role
+- Target Company
+- LinkedIn profile / About section (pasted text)
+
+AI outputs (via prompt chaining):
+
+Chain 5 — Profile Signal Extraction:
+Extract tone, top strengths, notable experience, unique angle from LinkedIn input. Use this to personalise all outreach.
+
+Chain 6 — LinkedIn DM:
+Max 120 words. Personalised. Confident not desperate. Clear CTA (spark a conversation, not ask for a job). No generic phrases.
+
+Chain 7 — Networking Email:
+150-250 words. Strong opening hook. Clear value proposition. Structure: why them -> credibility -> value -> low-pressure CTA.
+
+Chain 8 — Recruiter Message:
+Direct and results-focused. Emphasise relevance and impact. Confident and commercial tone.
+
+SYSTEM PROMPT (apply to all chains):
+"You are an elite career strategist, recruiter, and hiring manager combined. Your outputs must be specific, personalised, human-sounding, and sharp. Avoid all cliches, generic advice, and AI-sounding phrasing. Optimise every output for real-world hiring success and high response rates."
+
+UI/UX REQUIREMENTS
+- Clean, modern light theme. Navy (#0F172A) and gold (#F59E0B) accent colours
+- Homepage: headline "Stop Applying for Jobs. Start Getting Replies." with two clear tool options
+- Step-by-step wizard flow for inputs (not all on one screen)
+- Loading state: animated terminal log cycling through messages like:
+  "[INFO] Analysing candidate profile..."
+  "[INFO] Scouting Tier 1 companies..."
+  "[INFO] Drafting outreach scripts..."
+  "[SUCCESS] Strategy ready."
+- Results displayed in clean structured cards
+- Copy to clipboard button on every text output
+- Regenerate button for each section
+
+DATA STORAGE (Supabase)
+Create a table called outreach_sessions with columns:
+- id, created_at, email, tool_used, degree, work_experience, skills, interests, target_salary, location, target_role, target_company, linkedin_input, job_description, match_score, bridge_keywords (jsonb), generated_companies (jsonb), generated_roles (jsonb), career_roadmap (jsonb), outreach_linkedin, outreach_email, outreach_recruiter
+
+Store every session automatically on generation. No login required.
+
+IMPORTANT NOTES
+- Use streaming responses where possible so results appear progressively
+- Keep all API calls in /app/api/ route handlers
+- Store Anthropic API key and Supabase credentials in .env.local
+- Read the CLAUDE.md file in the project root for brand guidelines, colours, and tone of voice — apply these throughout
